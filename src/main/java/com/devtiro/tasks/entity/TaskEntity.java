@@ -25,16 +25,20 @@ public class TaskEntity {
     @Column(name = "description")
     private String description;
 
-    @Column(name = "due_date") // corrigido aqui
+    @Column(name = "due_date")
     private LocalDateTime dueDate;
 
-    @Enumerated(EnumType.STRING) // agora salva string
+    @Enumerated(EnumType.STRING)
     @Column(name = "status", nullable = false)
     private TaskStatus status;
 
-    @Enumerated(EnumType.STRING) // agora salva string
+    @Enumerated(EnumType.STRING)
     @Column(name = "priority", nullable = false)
     private TaskPriority priority;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "task_list_id")
+    private TaskList taskList;
 
     @CreationTimestamp
     @Column(name = "created", nullable = false, updatable = false)
@@ -48,30 +52,100 @@ public class TaskEntity {
     public TaskEntity() {
     }
 
-    // 🔹 Construtor completo
-    public TaskEntity(UUID id, String title, String description, LocalDateTime dueDate, TaskStatus status, TaskPriority priority, LocalDateTime created, LocalDateTime updated) {
+    public TaskEntity(UUID id, String title, String description, LocalDateTime dueDate, TaskStatus status, TaskPriority priority, TaskList taskList, LocalDateTime created, LocalDateTime updated) {
         this.id = id;
         this.title = title;
         this.description = description;
         this.dueDate = dueDate;
         this.status = status;
         this.priority = priority;
+        this.taskList = taskList;
         this.created = created;
         this.updated = updated;
     }
 
-    // getters e setters...
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+
+    public void setDescription(String description) {
+        this.description = description;
+    }
+
+    public LocalDateTime getDueDate() {
+        return dueDate;
+    }
+
+    public void setDueDate(LocalDateTime dueDate) {
+        this.dueDate = dueDate;
+    }
+
+    public TaskStatus getStatus() {
+        return status;
+    }
+
+    public void setStatus(TaskStatus status) {
+        this.status = status;
+    }
+
+    public TaskPriority getPriority() {
+        return priority;
+    }
+
+    public void setPriority(TaskPriority priority) {
+        this.priority = priority;
+    }
+
+    public TaskList getTaskList() {
+        return taskList;
+    }
+
+    public void setTaskList(TaskList taskList) {
+        this.taskList = taskList;
+    }
+
+    public LocalDateTime getCreated() {
+        return created;
+    }
+
+    public void setCreated(LocalDateTime created) {
+        this.created = created;
+    }
+
+    public LocalDateTime getUpdated() {
+        return updated;
+    }
+
+    public void setUpdated(LocalDateTime updated) {
+        this.updated = updated;
+    }
 
     @Override
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         TaskEntity that = (TaskEntity) o;
-        return Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(description, that.description) && Objects.equals(dueDate, that.dueDate) && status == that.status && priority == that.priority && Objects.equals(created, that.created) && Objects.equals(updated, that.updated);
+        return Objects.equals(id, that.id) && Objects.equals(title, that.title) && Objects.equals(description, that.description) && Objects.equals(dueDate, that.dueDate) && status == that.status && priority == that.priority && Objects.equals(taskList, that.taskList) && Objects.equals(created, that.created) && Objects.equals(updated, that.updated);
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, title, description, dueDate, status, priority, created, updated);
+        return Objects.hash(id, title, description, dueDate, status, priority, taskList, created, updated);
     }
 
     @Override
@@ -83,6 +157,7 @@ public class TaskEntity {
                 ", dueDate=" + dueDate +
                 ", status=" + status +
                 ", priority=" + priority +
+                ", taskList=" + taskList +
                 ", created=" + created +
                 ", updated=" + updated +
                 '}';
